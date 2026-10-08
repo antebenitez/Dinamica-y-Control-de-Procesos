@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comparador interactivo y = mx + b</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;font-family:Arial,sans-serif;color:#172033}
+#app{max-width:1100px;margin:0 auto;padding:14px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:16px}
+.panel{background:#f8fafc;border:1px solid #d8dee8;border-radius:14px;padding:14px}
+.ctrl{background:#fff;border:1px solid #d8dee8;border-radius:11px;padding:10px;margin-bottom:9px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
+.name{font-weight:700;font-size:14px}.eq{font-family:monospace;font-size:12px;color:#667085}
+.row{display:grid;grid-template-columns:25px 1fr 46px;align-items:center;gap:6px;font-size:12px;margin:5px 0}
+input[type=range]{width:100%}.num{font-weight:bold;text-align:right}
+svg{width:100%;height:auto;background:#fff;border:1px solid #d8dee8;border-radius:10px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px;font-size:12px;color:#667085}
+.legend span{display:flex;align-items:center;gap:5px}.swatch{width:11px;height:11px;border-radius:50%;display:inline-block}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="layout">
+<div class="panel">
+<svg id="plot" viewBox="0 0 720 450" role="img" aria-label="Plano cartesiano con hasta cuatro rectas"></svg>
+<div id="legend" class="legend"></div>
+</div>
+<div class="panel" id="controls"></div>
+</div>
+</div>
+<script>
+(function(){
+const root=document.getElementById("app"),svg=document.getElementById("plot"),
+controls=document.getElementById("controls"),legend=document.getElementById("legend");
+const NS="http://www.w3.org/2000/svg",W=720,H=450,L=58,R=18,T=22,B=45;
+const xmin=-6,xmax=6,ymin=-8,ymax=8;
+const colors=["#536dfe","#e07a35","#2f9e74","#a855a8"];
+const lines=[
+ {m:1,b:0,on:true},{m:2,b:0,on:true},
+ {m:1,b:2,on:false},{m:-1,b:3,on:false}
+];
+const X=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R);
+const Y=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+const E=(tag,a)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);return e};
+const fmt=v=>Number(v).toFixed(1);
+const equation=(m,b)=>"y = "+fmt(m)+"x "+(b>=0?"+ ":"− ")+Math.abs(b).toFixed(1);
+
+lines.forEach((d,i)=>{
+ const c=document.createElement("div");c.className="ctrl";
+ c.innerHTML='<div class="head"><label class="name"><input class="toggle" type="checkbox" '+(d.on?"checked":"")+'> Recta '+(i+1)+'</label><span class="eq">'+equation(d.m,d.b)+'</span></div>'+
+ '<div class="row"><span>m</span><input class="m" type="range" min="-3" max="3" step="0.1" value="'+d.m+'"><span class="mval num">'+fmt(d.m)+'</span></div>'+
+ '<div class="row"><span>b</span><input class="b" type="range" min="-5" max="5" step="0.1" value="'+d.b+'"><span class="bval num">'+fmt(d.b)+'</span></div>';
+ const toggle=c.querySelector(".toggle"),mi=c.querySelector(".m"),bi=c.querySelector(".b"),
+ eq=c.querySelector(".eq"),mval=c.querySelector(".mval"),bval=c.querySelector(".bval");
+ toggle.addEventListener("change",()=>{d.on=toggle.checked;draw()});
+ mi.addEventListener("input",()=>{d.m=+mi.value;mval.textContent=fmt(d.m);eq.textContent=equation(d.m,d.b);draw()});
+ bi.addEventListener("input",()=>{d.b=+bi.value;bval.textContent=fmt(d.b);eq.textContent=equation(d.m,d.b);draw()});
+ controls.appendChild(c);
+});
+
+function draw(){
+ while(svg.firstChild)svg.removeChild(svg.firstChild);
+ for(let x=-6;x<=6;x++){
+  svg.appendChild(E("line",{x1:X(x),y1:Y(ymin),x2:X(x),y2:Y(ymax),stroke:"#e6e9ef","stroke-width":1}));
+  if(x!==0){let t=E("text",{x:X(x),y:H-B+18,"text-anchor":"middle","font-size":12,fill:"#667085"});t.textContent=x;svg.appendChild(t)}
+ }
+ for(let y=-8;y<=8;y++){
+  svg.appendChild(E("line",{x1:X(xmin),y1:Y(y),x2:X(xmax),y2:Y(y),stroke:"#e6e9ef","stroke-width":1}));
+  if(y!==0){let t=E("text",{x:L-10,y:Y(y)+4,"text-anchor":"end","font-size":12,fill:"#667085"});t.textContent=y;svg.appendChild(t)}
+ }
+ svg.appendChild(E("line",{x1:X(xmin),y1:Y(0),x2:X(xmax),y2:Y(0),stroke:"#667085","stroke-width":2}));
+ svg.appendChild(E("line",{x1:X(0),y1:Y(ymin),x2:X(0),y2:Y(ymax),stroke:"#667085","stroke-width":2}));
+ legend.innerHTML="";
+ lines.forEach((d,i)=>{
+  if(!d.on)return;
+  svg.appendChild(E("line",{x1:X(xmin),y1:Y(d.m*xmin+d.b),x2:X(xmax),y2:Y(d.m*xmax+d.b),stroke:colors[i],"stroke-width":4,"stroke-linecap":"round"}));
+  if(d.b>=ymin&&d.b<=ymax)svg.appendChild(E("circle",{cx:X(0),cy:Y(d.b),r:6,fill:colors[i]}));
+  const s=document.createElement("span");s.innerHTML='<i class="swatch" style="background:'+colors[i]+'"></i>'+equation(d.m,d.b);legend.appendChild(s);
+ });
+}
+draw();
+})();
+</script>
+</body>
+</html>
