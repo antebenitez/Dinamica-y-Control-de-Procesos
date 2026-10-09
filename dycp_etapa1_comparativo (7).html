@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10243a"><title>DyCP · Etapa 1 · Comparación de sistemas</title>
+<style>
+:root{--navy:#10243a;--blue:#145da0;--bg:#eef3f8;--ink:#142b40;--muted:#5a6e80;--line:#d7e1ea}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--navy);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:clamp(1.35rem,3vw,2rem);line-height:1.15;margin:5px 0 8px}h2{font-size:1.05rem;margin:0 0 12px}p{margin:6px 0}.sub,.muted{color:var(--muted)}header .sub{color:#c8d7e6;font-size:.85rem}
+button,input,select{font:inherit}button{border:0;border-radius:10px;min-height:44px;padding:10px 14px;font-weight:750;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #83b9f3;outline-offset:2px}
+.primary{background:var(--blue);color:white}.secondary{background:#e6edf4;color:#173b5b}.light{background:white;color:#173b5b}
+main{max-width:1150px;margin:auto;padding:15px;display:grid;gap:15px}.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 7px 22px #142b400d;min-width:0}
+.kicker{color:var(--blue);font-weight:850;letter-spacing:.08em;font-size:.75rem;text-transform:uppercase}.small{font-size:.87rem}
+.layout{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:15px}.field{margin:14px 0}.field label{display:flex;justify-content:space-between;gap:8px;font-weight:750;font-size:.92rem;margin-bottom:8px}
+input[type=range]{width:100%;accent-color:var(--blue);min-height:34px}input[type=number],select{width:100%;padding:11px;border:1px solid #bacbd9;border-radius:10px;background:#fff;min-height:45px;color:var(--ink)}
+.ends{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted)}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.actions button{flex:1}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:13px}.metric{background:#f5f8fb;border:1px solid var(--line);border-radius:11px;padding:10px;min-width:0}.metric span{display:block;color:var(--muted);font-size:.74rem}.metric strong{font-size:clamp(1rem,2.4vw,1.35rem);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.callout{padding:12px;border-radius:11px;background:#e7f2ff;border:1px solid #c8def8;margin-top:13px}.warn{background:#fff4dd;border-color:#f0d08b;color:#754300}.chartbox{height:320px;position:relative}canvas{width:100%;height:100%;display:block}.legend{font-size:.82rem;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}.swatch{display:inline-block;width:20px;height:3px;background:#145da0;vertical-align:middle;margin-right:5px}.swatch2{background:#c27b16}
+dialog{width:min(700px,calc(100% - 22px));max-height:88vh;overflow:auto;padding:0;border:1px solid var(--line);border-radius:16px;color:var(--ink)}dialog::backdrop{background:#061525b8;backdrop-filter:blur(3px)}.dhead{background:var(--navy);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}.dbody{padding:18px}.eq{font:1rem ui-monospace,Consolas,monospace;background:#f3f7fb;border:1px solid var(--line);padding:12px;border-radius:9px;overflow-wrap:anywhere;margin:8px 0}footer{text-align:center;color:var(--muted);font-size:.8rem;padding:4px 14px 22px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.chartbox{height:290px}}@media(max-width:380px){main{padding:9px}.panel{padding:13px}.metrics{gap:5px}.metric{padding:7px}.metric span{font-size:.68rem}}
+
+.cstr-panel{grid-column:1/-1;align-self:start;margin-top:0}
+.cstr-wrap{width:100%;overflow-x:auto;border:1px solid var(--border,#dbe3ea);border-radius:14px;background:linear-gradient(180deg,#f8fafc,#eef4f7);padding:8px}
+.cstr-wrap svg{display:block;width:100%;min-width:560px;max-height:390px;color:#263f55}
+.thermal-metrics{margin-top:12px}
+#liquidFill,#liquidWave{transition:fill .45s ease}
+@media(max-width:640px){.cstr-wrap svg{min-width:560px}.cstr-wrap{padding:4px}}
+
+.result-overlay{position:fixed;inset:0;z-index:1000;background:#061525d9;display:grid;place-items:center;padding:14px;overflow:auto}
+.result-overlay[hidden]{display:none}
+.result-card{background:#fff;width:min(760px,100%);max-height:96vh;overflow:auto;border-radius:18px;box-shadow:0 24px 80px #0006}
+.result-head{background:var(--navy);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.result-head h2{margin:0}.result-body{padding:18px}
+.result-badge{font-size:clamp(2rem,8vw,4rem);font-weight:950;letter-spacing:.06em;text-align:center;color:#15803d;margin:4px 0 8px}
+.result-badge.gameover{color:#991b1b}.result-badge.retry{color:#b45309}
+#resultVideo{display:block;width:100%;max-height:55vh;background:#000;border-radius:12px;margin-top:12px}
+</style></head>
+<body>
+<header><div><strong>DyCP · Dinámica y Control de Procesos</strong><div class="sub">Reactor exotérmico simplificado · Etapa 1</div></div><button class="light" id="openModel">Modelo matemático</button></header>
+<main>
+<section class="panel"><div class="kicker">Etapa 1 · Sin controlador</div><h1>Explora la dinámica del reactor</h1><p>Modifica la perturbación térmica y observa cómo responde la temperatura. En esta etapa no existe controlador: el proceso responde por su propia dinámica.</p><p class="small muted">Modelo didáctico de primer orden; no representa por sí solo una formulación industrial validada ni sus límites reales de seguridad.</p></section>
+<section class="panel"><h2>Reto de exploración · límite: 5 minutos reales</h2><p class="small">Aplica una perturbación constante de <b>+8 °C</b>. Usa la gráfica para estimar la ganancia estática y la constante de tiempo. Después prueba otra perturbación y compara.</p><div class="metrics"><div class="metric"><span>Tiempo restante</span><strong id="countdown">05:00</strong></div><div class="metric"><span>Referencia fija Tsp</span><strong>80.00 °C</strong></div><div class="metric"><span>Sistema base</span><strong>τ₀ = 5 min · K₀ = 1</strong></div></div>
+<p class="small muted" style="margin-top:8px">La referencia Tsp = 80 °C permanece fija y no hay controlador. Compara dos modelos de primer orden en lazo abierto; ambos reciben la misma perturbación. La variable controlada conceptual es T, pero en esta etapa no hay controlador.</p></section>
+<section class="layout">
+<div class="panel"><h2>Entrada común y parámetros</h2>
+<div class="field"><label for="dRange"><span>Perturbación común d</span><span id="dLabel">+8.0 °C</span></label><input id="dRange" type="range" min="-20" max="25" step="0.5" value="8"><div class="ends"><span>−20 °C</span><span>0 °C</span><span>+25 °C</span></div></div>
+<div class="field"><label for="dNum">Perturbación numérica (°C)</label><input id="dNum" type="number" min="-20" max="25" step="0.5" value="8" inputmode="decimal"></div>
+<div class="callout"><b>Sistema A · Base (fijo)</b><p class="small">τ₀ = 5 min · K₀ = 1</p><p class="small">G₀(s) = Y(s)/D(s) = 1 / (5s + 1)</p><strong id="steadyBase">88.00 °C en estado estacionario</strong></div>
+<div class="callout" style="background:#fff7ed;border-color:#fed7aa"><b>Sistema B · Experimental</b>
+<div class="field"><label for="tauNum"><span>Constante de tiempo τ (min)</span><span>0.5–30</span></label><input id="tauNum" type="number" min="0.5" max="30" step="0.5" value="8" inputmode="decimal"></div>
+<div class="field"><label for="kNum"><span>Ganancia estática K</span><span>−2 a 3</span></label><input id="kNum" type="number" min="-2" max="3" step="0.1" value="1.5" inputmode="decimal"></div>
+<p class="small">G(s) = Y(s)/D(s) = K / (τs + 1)</p><strong id="steadyExp">92.00 °C en estado estacionario</strong></div>
+<div class="actions"><button id="apply" class="secondary">Aplicar parámetros</button><button id="play" class="primary">Iniciar</button><button id="reset" class="secondary">Reiniciar</button></div>
+<div class="metrics"><div class="metric"><span>T base</span><strong id="tempBase">80.00 °C</strong></div><div class="metric"><span>T experimental</span><strong id="tempExp">80.00 °C</strong></div><div class="metric"><span>Tiempo simulado</span><strong id="time">0.00 min</strong></div></div>
+<div id="status" class="callout warn" aria-live="polite">Simulación pausada. Pulsa «Iniciar» para comparar las dos respuestas.</div>
+</div>
+<div class="panel"><h2>Comparación de respuestas T(t)</h2><p class="small muted">Las dos curvas reciben la misma perturbación térmica equivalente. Cambia τ y K del sistema experimental para comparar rapidez y magnitud de respuesta. En esta etapa no se simula un controlador.</p><div class="chartbox"><canvas id="plot" role="img" aria-label="Gráfica comparativa de temperatura contra tiempo para el sistema base y el experimental"></canvas></div><div class="legend"><span><i class="swatch"></i>Sistema A · Base</span><span><i class="swatch2 swatch"></i>Sistema B · Experimental</span><span><i class="swatch" style="background:#64748b"></i>Setpoint fijo Tsp = 80 °C</span></div></div>
+
+</section>
+<section class="panel"><h2>Comprueba tu interpretación</h2><p>Si mantienes la misma perturbación y aumentas τ del sistema experimental, ¿qué ocurre?</p><select id="quiz"><option value="">Selecciona una respuesta…</option><option value="a">Aumenta la rapidez de respuesta.</option><option value="b">La respuesta se vuelve más lenta, pero su valor final no cambia por τ.</option><option value="c">La temperatura de referencia cambia automáticamente.</option></select><button id="check" class="primary" style="margin-top:10px">Comprobar</button><p id="feedback" class="small" aria-live="polite"></p></section>
+</main>
+<div id="resultOverlay" class="result-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+  <div class="result-card">
+    <div class="result-head"><h2 id="resultTitle">Resultado del reto</h2><button id="closeResult" class="light" type="button">Cerrar</button></div>
+    <div class="result-body">
+      <div id="resultBadge" class="result-badge">WIN</div>
+      <p id="resultMessage">Resultado de la simulación.</p>
+      <video id="resultVideo" controls autoplay playsinline preload="metadata"></video>
+      <p class="small muted">Si el video no inicia automáticamente, pulsa reproducir.</p>
+      <div class="actions"><button id="replay" class="primary" type="button">Volver a intentar</button></div>
+    </div>
+  </div>
+</div>
+<footer>Cálculo local en el navegador · No requiere cuenta ni servicios externos</footer>
+<dialog id="model"><div class="dhead"><div><b>Modelo matemático del reactor</b><div class="small" style="color:#c8d7e6">Ecuaciones usadas en esta etapa</div></div><button id="closeModel" class="light">Cerrar</button></div><div class="dbody">
+<h2>1. Sistema A · modelo base</h2><div class="eq">τ₀ dy₀/dt + y₀ = K₀ d(t)</div><div class="eq">τ₀ = 5 min; K₀ = 1; T₀ = 80 + y₀</div>
+<h2>2. Sistema B · modelo experimental</h2><div class="eq">τ dy/dt + y = K d(t)</div><div class="eq">G(s) = Y(s)/D(s) = K/(τs + 1)</div><p class="small">Puedes cambiar τ y K del sistema B. El sistema A permanece fijo como referencia; ambos reciben la misma perturbación térmica equivalente d(t). La salida y representa la desviación de temperatura respecto de 80 °C.</p>
+<h2>3. Respuesta a una perturbación constante</h2><div class="eq">T₀(t) = 80 + K₀d[1 − exp(−t/τ₀)]</div><div class="eq">T(t) = 80 + Kd[1 − exp(−t/τ)]</div><div class="eq">T₀(∞) = 80 + K₀d; T(∞) = 80 + Kd</div><p class="small">τ determina la rapidez de respuesta; K determina la magnitud y el signo de la desviación estacionaria. En t = τ, la respuesta alcanza aproximadamente el 63.2 % de su cambio final. Ambos modelos se integran con Runge–Kutta de cuarto orden (RK4).</p><div class="callout warn">Modelo lineal didáctico: no predice la cinética, la generación de calor ni la seguridad de una formulación industrial específica.</div></div></dialog>
+<script>
+(()=>{'use strict';
+const T0=80,TAU0=5,K0=1,DT=.02,LIMIT=300,$=id=>document.getElementById(id);
+const canvas=$('plot'),ctx=canvas.getContext('2d');
+let y0=0,y1=0,t=0,d=8,tau=8,K=1.5,running=false,raf=0,elapsed=0,last=0,acc=0;
+let points=[{t:0,T0:80,T1:80}],lastDraw=0,winBandStart=null;
+function deriv(v,dist,kk,tt){return(-v+kk*dist)/tt}
+function rk4(v,dist,kk,tt,h){const a=deriv(v,dist,kk,tt),b=deriv(v+h*a/2,dist,kk,tt),c=deriv(v+h*b/2,dist,kk,tt),e=deriv(v+h*c,dist,kk,tt);return v+h*(a+2*b+2*c+e)/6}
+function clampNum(v,min,max,fallback){v=Number(v);return Number.isFinite(v)?Math.max(min,Math.min(max,v)):fallback}
+function fmt(v){return (v>0?'+':'')+v.toFixed(1)}
+function updateReadouts(){
+ $('dRange').value=d;$('dNum').value=d;$('dLabel').textContent=fmt(d)+' °C';
+ $('tauNum').value=tau;$('kNum').value=K;
+ $('steadyBase').textContent=(T0+K0*d).toFixed(2)+' °C en estado estacionario';
+ $('steadyExp').textContent=(T0+K*d).toFixed(2)+' °C en estado estacionario';
+}
+function setD(v){d=clampNum(v,-20,25,0);updateReadouts();draw()}
+function applyParams(){
+ tau=clampNum($('tauNum').value,.5,30,8);
+ K=clampNum($('kNum').value,-2,3,1.5);
+ $('tauNum').value=tau;$('kNum').value=K;
+ // Cada comparación nueva comienza en las mismas condiciones iniciales.
+ running=false;cancelAnimationFrame(raf);elapsed=0;last=0;
+ y0=0;y1=0;t=0;acc=0;points=[{t:0,T0:80,T1:80}];
+ $('play').textContent='Iniciar';
+ updateReadouts();metrics();countdown();draw();
+ $('status').className='callout';$('status').textContent='Parámetros aplicados. Ambas respuestas parten de 80 °C y reciben la misma perturbación. Pulsa «Iniciar» para comparar desde el inicio.';
+}
+function metrics(){$('tempBase').textContent=(T0+y0).toFixed(2)+' °C';$('tempExp').textContent=(T0+y1).toFixed(2)+' °C';$('time').textContent=t.toFixed(2)+' min'}
+function countdown(){let n=Math.max(0,Math.ceil(LIMIT-elapsed));$('countdown').textContent=String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
+function reset(){running=false;cancelAnimationFrame(raf);$('resultVideo').pause();$('resultOverlay').hidden=true;resultShown=false;y0=0;y1=0;t=0;elapsed=0;last=0;acc=0;winBandStart=null;points=[{t:0,T0:80,T1:80}];$('play').textContent='Iniciar';$('status').className='callout warn';$('status').textContent='Simulación reiniciada. Pulsa «Iniciar» para comenzar la comparación.';metrics();countdown();draw()}
+function tick(now){if(!running)return;if(!last)last=now;let delta=Math.min((now-last)/1000,.1);last=now;elapsed+=delta;acc+=delta*5;
+ while(acc>=DT){
+   y0=rk4(y0,d,K0,TAU0,DT);y1=rk4(y1,d,K,tau,DT);t+=DT;acc-=DT;
+   if(Math.round(t/DT)%5===0)points.push({t,T0:T0+y0,T1:T0+y1});
+   if(Math.abs((T0+y1)-T0)<=1.6){if(winBandStart===null)winBandStart=t;if(t-winBandStart>=5){running=false;cancelAnimationFrame(raf);finish('win','WIN','¡Ganaste! El sistema experimental se mantuvo dentro de ±2 % de la referencia durante 5 minutos simulados.','VIDEO 1.mp4');return}}else{winBandStart=null}
+   if(points.length>3000)points.shift();
+   const baseTemp=T0+y0;
+   // Las restricciones térmicas aplican únicamente al sistema base (A).
+   if(baseTemp>=95){running=false;cancelAnimationFrame(raf);finish('gameover','GAME OVER','La temperatura del sistema base alcanzó o superó 95 °C.','VIDEO 4.mp4');return}
+   if(baseTemp<65){running=false;cancelAnimationFrame(raf);finish('retry','INTÉNTALO DE NUEVO','La temperatura del sistema base cayó por debajo de 65 °C.','VIDEO 3.mp4');return}
+ }
+ metrics();countdown();if(now-lastDraw>100){draw();lastDraw=now}
+ if(elapsed>=LIMIT){
+   running=false;$('play').textContent='Iniciar';countdown();draw();
+   if(evaluateWin())return;
+   const baseError=Math.abs((T0+y0)-T0),expError=Math.abs((T0+y1)-T0);
+   if(expError+0.25<baseError){finish('retry','INTÉNTALO DE NUEVO','La sintonización experimental mejora la respuesta respecto al sistema base, pero no alcanza el criterio de victoria.','VIDEO 2.mp4')}
+   else {finish('retry','INTÉNTALO DE NUEVO','No se alcanzó la condición de victoria en el tiempo disponible.','VIDEO 3.mp4')}
+   return
+ }
+ raf=requestAnimationFrame(tick)}
+
+let resultShown=false;
+function finish(kind,title,message,videoName){
+ running=false;cancelAnimationFrame(raf);resultShown=true;
+ $('resultTitle').textContent=title;$('resultMessage').textContent=message;
+ const badge=$('resultBadge');badge.textContent=title;badge.className='result-badge'+(kind==='gameover'?' gameover':kind==='retry'?' retry':'');
+ const vid=$('resultVideo');vid.pause();vid.src=videoName;vid.load();
+ $('resultOverlay').hidden=false;
+ const playPromise=vid.play();if(playPromise&&playPromise.catch)playPromise.catch(()=>{});
+ $('play').textContent='Reiniciar';
+ $('status').className='callout warn';$('status').textContent=message;
+}
+function evaluateWin(){
+ // El sistema B gana si permanece cerca del setpoint en el final de la simulación,
+ // mientras que el sistema base no viola sus restricciones térmicas.
+ const expTemp=T0+y1,baseTemp=T0+y0;
+ if(baseTemp>=95){finish('gameover','GAME OVER','La temperatura del sistema base alcanzó o superó 95 °C.','VIDEO 4.mp4');return true}
+ if(baseTemp<65){finish('retry','INTÉNTALO DE NUEVO','La temperatura del sistema base cayó por debajo de 65 °C.','VIDEO 3.mp4');return true}
+ if(Math.abs(expTemp-T0)<=1.6){
+   finish('win','WIN','¡Ganaste! La temperatura experimental terminó dentro de ±2 % de la referencia de 80 °C.','VIDEO 1.mp4');return true
+ }
+ return false;
+}
+function toggle(){if(running){running=false;cancelAnimationFrame(raf);$('play').textContent='Continuar';$('status').textContent='Simulación pausada.'}else{if(elapsed>=LIMIT)return;running=true;last=0;$('play').textContent='Pausar';$('status').className='callout';$('status').textContent='Simulación en ejecución. La perturbación se mantiene igual para ambos sistemas.';raf=requestAnimationFrame(tick)}}
+function draw(){
+ const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const ratio=Math.min(devicePixelRatio||1,2);
+ canvas.width=Math.round(r.width*ratio);canvas.height=Math.round(r.height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
+ const w=r.width,h=r.height,p={l:45,r:12,t:20,b:34},pw=w-p.l-p.r,ph=h-p.t-p.b;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+ const xmax=Math.max(10,Math.ceil(Math.max(t,10)/5)*5),pred0=T0+K0*d,pred1=T0+K*d;
+ const vals=points.flatMap(q=>[q.T0,q.T1]).concat([T0,pred0,pred1,60,95]);
+ let ymin=Math.min(55,Math.floor((Math.min(...vals)-2)/5)*5),ymax=Math.max(100,Math.ceil((Math.max(...vals)+2)/5)*5);
+ const X=v=>p.l+v/xmax*pw,Y=v=>p.t+(ymax-v)/(ymax-ymin)*ph;
+ ctx.font='11px system-ui';ctx.lineWidth=1;ctx.strokeStyle='#e1e8ef';ctx.fillStyle='#536779';
+ for(let v=Math.ceil(ymin/5)*5;v<=ymax;v+=5){let yy=Y(v);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText(v,7,yy+4)}
+ const step=xmax/4;for(let v=0;v<=xmax+.001;v+=step){let xx=X(v);ctx.beginPath();ctx.moveTo(xx,p.t);ctx.lineTo(xx,h-p.b);ctx.stroke();ctx.fillText(v.toFixed(v%1?1:0),xx-5,h-12)}
+ ctx.strokeStyle='#64748b';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(p.l,Y(T0));ctx.lineTo(w-p.r,Y(T0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#64748b';ctx.fillText('Tsp 80 °C',w-p.r-58,Y(T0)-5);
+ ctx.strokeStyle='#145da0';ctx.lineWidth=2.5;ctx.beginPath();points.forEach((q,i)=>{let xx=X(q.t),yy=Y(q.T0);if(!i)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.stroke();
+ ctx.strokeStyle='#c27b16';ctx.lineWidth=2.5;ctx.beginPath();points.forEach((q,i)=>{let xx=X(q.t),yy=Y(q.T1);if(!i)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.stroke();
+ // Expected steady-state levels, dotted in the matching system colors
+ ctx.setLineDash([5,4]);ctx.lineWidth=1.5;ctx.strokeStyle='#145da0';ctx.beginPath();ctx.moveTo(p.l,Y(pred0));ctx.lineTo(w-p.r,Y(pred0));ctx.stroke();ctx.strokeStyle='#c27b16';ctx.beginPath();ctx.moveTo(p.l,Y(pred1));ctx.lineTo(w-p.r,Y(pred1));ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#263f55';ctx.fillText('Temperatura (°C)',p.l,12);ctx.fillText('Tiempo (min)',Math.max(p.l,w/2-30),h-1);
+}
+$('dRange').addEventListener('input',e=>setD(e.target.value));$('dNum').addEventListener('change',e=>setD(e.target.value));
+$('tauNum').addEventListener('change',()=>{});$('kNum').addEventListener('change',()=>{});
+$('apply').addEventListener('click',applyParams);$('play').addEventListener('click',toggle);$('reset').addEventListener('click',reset);
+$('closeResult').addEventListener('click',()=>{$('resultVideo').pause();$('resultOverlay').hidden=true});$('replay').addEventListener('click',()=>{reset();toggle()});
+$('openModel').addEventListener('click',()=>$('model').showModal());$('closeModel').addEventListener('click',()=>$('model').close());
+$('check').addEventListener('click',()=>{let v=$('quiz').value,f=$('feedback');if(!v){f.textContent='Selecciona una respuesta.';return}f.textContent=v==='b'?'Correcto: τ modifica la rapidez de respuesta; para una entrada constante, el valor final depende de K y de la perturbación.':'No exactamente. Una τ mayor hace más lenta la respuesta; el valor final depende de K y de la perturbación.';f.style.color=v==='b'?'#176c45':'#a61b1b'});
+window.addEventListener('resize',draw);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){running=false;cancelAnimationFrame(raf);$('play').textContent='Continuar';$('status').textContent='Pausada porque la pestaña dejó de estar visible.'}});
+updateReadouts();metrics();countdown();draw();
+})();
+</script></body></html>

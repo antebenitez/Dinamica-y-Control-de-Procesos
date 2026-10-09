@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DyCP | Centro de simulación</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d30;--panel2:#17243a;--line:#2b3c56;--text:#edf4ff;--muted:#a9b8ce;--cyan:#55d6e8;--green:#62d6a4;--amber:#ffca70;--red:#ff7d8a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#0b1220 58%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:1150px;margin:auto;padding:28px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#55d6e8,#5487ff);display:grid;place-items:center;color:#071321;font-weight:900;font-size:20px}.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:800}.brand h1{font-size:19px;margin:0}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--muted);font-size:12px}
+main{max-width:900px;margin:0 auto}.hero{text-align:center;margin:42px 0 26px}.hero h2{font-size:clamp(30px,5vw,48px);line-height:1.08;letter-spacing:-.04em;margin:10px 0 14px}.hero p{color:var(--muted);max-width:620px;margin:0 auto}.panel{background:linear-gradient(160deg,rgba(23,36,58,.96),rgba(15,25,42,.96));border:1px solid var(--line);border-radius:22px;padding:clamp(20px,4vw,34px);box-shadow:0 22px 65px #0003;margin:22px 0}.field-label{display:block;font-size:13px;font-weight:700;color:#dbe8f8;margin-bottom:8px}input{width:100%;padding:15px 16px;border:1px solid #3a4d68;background:#0b1423;color:var(--text);border-radius:12px;font-size:16px;outline:none}input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #55d6e822}.hint{font-size:12px;color:var(--muted);margin-top:8px}.btn{border:0;border-radius:12px;padding:13px 17px;font-weight:800;cursor:pointer;background:var(--cyan);color:#061520;font-size:14px}.btn.secondary{background:#233650;color:var(--text);border:1px solid #3a4d68}.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:14px}.stage{background:#101b2c;border:1px solid var(--line);border-radius:16px;padding:19px;text-align:left;cursor:pointer;color:var(--text);transition:.15s}.stage:hover{border-color:var(--cyan);transform:translateY(-2px)}.stage .num{color:var(--cyan);font-size:12px;font-weight:900;letter-spacing:.12em}.stage h3{margin:7px 0;font-size:17px}.stage p{color:var(--muted);font-size:13px;margin:0 0 14px}.stage .go{font-size:12px;font-weight:800;color:var(--green)}.hidden{display:none!important}.notice{padding:13px 15px;border:1px solid #826b3b;background:#4a381b44;border-radius:12px;color:#ffe0a1;font-size:13px;margin:14px 0}.ok{border-color:#276b59;background:#133c3344;color:#aaf3d6}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.section-head h2{margin:0;font-size:26px}.sub{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.stat{border:1px solid var(--line);border-radius:14px;background:#0d1727;padding:15px}.stat strong{display:block;font-size:26px}.stat span{font-size:12px;color:var(--muted)}.students{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px;margin-top:18px}.student{border:1px solid var(--line);border-radius:16px;background:#0d1727;padding:16px;min-height:150px}.student h3{margin:0 0 4px;font-size:16px}.student .meta{font-size:12px;color:var(--muted)}.temp{font-size:28px;font-weight:850;margin:10px 0 4px}.bar{height:8px;border-radius:999px;background:#25354c;overflow:hidden;margin-top:12px}.bar>i{display:block;height:100%;width:0;background:var(--cyan);transition:width .25s,background .25s}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:700}td{color:#e3ecf9}.empty{border:1px dashed #40536d;border-radius:14px;padding:24px;text-align:center;color:var(--muted);grid-column:1/-1}.footer{text-align:center;color:#778ba5;font-size:12px;margin-top:35px}.small{font-size:12px;color:var(--muted)}@media(max-width:600px){.top{align-items:flex-start}.pill{display:none}.stats{grid-template-columns:1fr}.hero{margin-top:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="logo">D</div><div><div class="eyebrow">Laboratorio virtual</div><h1>Dinámica y Control de Procesos</h1></div></div>
+  <div class="pill">Simulador académico · UNAM / DyCP</div>
+</header>
+<main>
+<section id="entry">
+  <div class="hero"><div class="eyebrow">Bienvenido al laboratorio</div><h2>Aprende a controlar<br>un proceso, ingeniero.</h2><p>Ingresa tu nombre para iniciar la práctica. El avance se registra por etapa; puedes continuar aunque no alcances el objetivo de control.</p></div>
+  <div class="panel">
+    <label class="field-label" for="name">Nombre del ingeniero o ingeniera</label>
+    <input id="name" autocomplete="name" placeholder="Ej. Ana López" maxlength="80">
+    <div class="hint">Modo docente: escribe exactamente <b>DyCP</b>. Para el reporte escribe <b>RESULTADOS</b>.</div>
+    <div class="actions"><button class="btn" id="enter">Entrar al laboratorio →</button></div>
+    <div id="entryError" class="notice hidden"></div>
+  </div>
+</section>
+
+<section id="choose" class="hidden">
+  <div class="hero"><div class="eyebrow">Sesión de práctica</div><h2 id="welcome">Selecciona tu etapa</h2><p>Elige una etapa. No necesitas aprobar para avanzar: lo importante es observar la dinámica, interpretar las variables y probar estrategias de control.</p></div>
+  <div class="panel"><div class="section-head"><div><h2>Selecciona una etapa</h2><div class="sub">Tu nombre se asociará a la sesión.</div></div><button class="btn ghost" id="changeName">Cambiar nombre</button></div>
+    <div class="grid" style="margin-top:18px">
+      <button class="stage" data-url="dycp_etapa1_comparativo.html"><div class="num">ETAPA 01</div><h3>Dinámica en lazo abierto</h3><p>Compara la respuesta de dos procesos ante una perturbación.</p><div class="go">Abrir simulador ↗</div></button>
+      <button class="stage" data-url="dycp_etapa2_servocontrol.html"><div class="num">ETAPA 02</div><h3>Servocontrol</h3><p>Modifica el setpoint y observa la respuesta del controlador proporcional.</p><div class="go">Abrir simulador ↗</div></button>
+      <button class="stage" data-url="dycp_etapa3_regulacion.html"><div class="num">ETAPA 03</div><h3>Regulación</h3><p>Aplica perturbaciones y estudia cómo el lazo cerrado las rechaza.</p><div class="go">Abrir simulador ↗</div></button>
+      <button class="stage" data-url="dycp_etapa4_saturacion.html"><div class="num">ETAPA 04</div><h3>Saturación del actuador</h3><p>Observa qué sucede cuando la válvula alcanza sus límites físicos.</p><div class="go">Abrir simulador ↗</div></button>
+    </div>
+    <div class="notice ok">Puedes entrar a cualquier etapa independientemente de tus resultados anteriores.</div>
+  </div>
+</section>
+
+<section id="teacher" class="hidden">
+  <div class="panel">
+    <div class="section-head"><div><div class="eyebrow">Panel docente</div><h2>Monitoreo en vivo</h2><div class="sub">Vista de hasta 8 sesiones activas, con temperatura, color del reactor y datos de la práctica.</div></div><button class="btn secondary" id="refreshLive">Actualizar ahora</button></div>
+    <div id="backendNotice" class="notice">El panel está en modo de demostración. Para recibir sesiones de otros dispositivos hay que conectar la base de datos compartida y añadir el registro de telemetría a cada etapa.</div>
+    <div class="stats"><div class="stat"><strong id="activeCount">0</strong><span>Sesiones activas visibles</span></div><div class="stat"><strong>8</strong><span>Máximo de tarjetas simultáneas</span></div><div class="stat"><strong id="lastUpdate">—</strong><span>Última actualización</span></div></div>
+    <div id="studentGrid" class="students"><div class="empty">Aún no hay sesiones conectadas. Cuando los simuladores envíen telemetría aparecerán aquí.</div></div>
+    <div class="actions"><button class="btn ghost" id="backEntry">Volver al inicio</button><button class="btn secondary" id="openResults">Ver resultados de las últimas 24 h</button></div>
+  </div>
+</section>
+
+<section id="results" class="hidden">
+  <div class="panel">
+    <div class="section-head"><div><div class="eyebrow">Analítica de curso</div><h2>Reporte de las últimas 24 horas</h2><div class="sub">Intentos, etapas visitadas, estado final y último registro por estudiante.</div></div><button class="btn secondary" id="refreshResults">Actualizar reporte</button></div>
+    <div id="resultsNotice" class="notice">Reporte de demostración. Al conectar la base de datos se consultarán los eventos reales de las últimas 24 horas.</div>
+    <div class="stats"><div class="stat"><strong id="attemptCount">0</strong><span>Intentos registrados</span></div><div class="stat"><strong id="engineerCount">0</strong><span>Ingenieros distintos</span></div><div class="stat"><strong id="stageCount">0</strong><span>Etapas utilizadas</span></div></div>
+    <div class="tablewrap"><table><thead><tr><th>Fecha/hora</th><th>Ingeniero</th><th>Etapa</th><th>Temperatura</th><th>Estado</th></tr></thead><tbody id="resultsBody"><tr><td colspan="5" class="small">No hay datos de demostración. Conecta la base de datos para consultar el historial real.</td></tr></tbody></table></div>
+    <div class="actions"><button class="btn ghost" id="resultsBack">Volver al inicio</button><button class="btn secondary" id="exportCsv">Exportar CSV</button></div>
+  </div>
+</section>
+</main>
+<div class="footer">DyCP · Centro de simulación · Prototipo de integración</div>
+</div>
+<script>
+/*
+ CONFIGURACIÓN DEL BACKEND (Supabase)
+ 1. Crea un proyecto Supabase.
+ 2. Ejecuta el SQL entregado en dycp_supabase_schema.sql.
+ 3. Sustituye SUPABASE_URL y SUPABASE_ANON_KEY.
+ 4. Añade telemetría a cada etapa para que la vista en vivo reciba datos.
+ No pongas aquí una service_role key; utiliza solo la anon/public key y políticas RLS.
+*/
+const SUPABASE_URL = "PEGA_AQUI_LA_URL_DEL_PROYECTO";
+const SUPABASE_ANON_KEY = "PEGA_AQUI_LA_CLAVE_PUBLICA_ANON";
+const STAGES = {
+ "dycp_etapa1_comparativo.html":"Etapa 1 · Lazo abierto",
+ "dycp_etapa2_servocontrol.html":"Etapa 2 · Servocontrol",
+ "dycp_etapa3_regulacion.html":"Etapa 3 · Regulación",
+ "dycp_etapa4_saturacion.html":"Etapa 4 · Saturación"
+};
+let engineerName = "";
+let lastCsvRows = [];
+const $ = id => document.getElementById(id);
+function show(id){["entry","choose","teacher","results"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function backendReady(){return SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PEGA_AQUI") && SUPABASE_ANON_KEY.length>20 && !SUPABASE_ANON_KEY.includes("PEGA_AQUI");}
+function niceTime(v){if(!v)return "—";return new Date(v).toLocaleString("es-MX",{hour12:false});}
+function enter(){
+ const raw=$("name").value.trim();
+ $("entryError").classList.add("hidden");
+ if(!raw){$("entryError").textContent="Escribe tu nombre para continuar."; $("entryError").classList.remove("hidden");$("name").focus();return;}
+ if(raw.toUpperCase()==="RESULTADOS"){loadResults();show("results");return;}
+ if(raw.toUpperCase()==="DYCP"){show("teacher");loadLive();return;}
+ engineerName=raw;
+ $("welcome").textContent=`Hola, ${engineerName}. Selecciona tu etapa`;
+ sessionStorage.setItem("dycp_engineer_name",engineerName);
+ show("choose");
+}
+$("enter").addEventListener("click",enter);
+$("name").addEventListener("keydown",e=>{if(e.key==="Enter")enter();});
+$("changeName").addEventListener("click",()=>{show("entry");$("name").value=engineerName;$("name").focus();});
+$("backEntry").addEventListener("click",()=>show("entry"));
+$("resultsBack").addEventListener("click",()=>show("entry"));
+$("openResults").addEventListener("click",()=>{loadResults();show("results");});
+$("refreshLive").addEventListener("click",loadLive);
+$("refreshResults").addEventListener("click",loadResults);
+document.querySelectorAll(".stage").forEach(btn=>btn.addEventListener("click",()=>{
+ const url=btn.dataset.url;
+ sessionStorage.setItem("dycp_stage",url);
+ sessionStorage.setItem("dycp_started_at",new Date().toISOString());
+ // The destination stage should read dycp_engineer_name and send telemetry to Supabase.
+ window.location.href=url;
+}));
+function demoCards(){
+ const grid=$("studentGrid");
+ grid.innerHTML='<div class="empty">Sin datos reales todavía. Para mostrar aquí el color del reactor o las gráficas de hasta 8 estudiantes, configura Supabase e integra el envío periódico de temperatura, variable manipulada y setpoint desde cada etapa.</div>';
+ $("activeCount").textContent="0"; $("lastUpdate").textContent=new Date().toLocaleTimeString("es-MX",{hour12:false});
+}
+async function loadLive(){
+ if(!backendReady()){demoCards();return;}
+ try{
+   const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+   const cutoff=new Date(Date.now()-90*1000).toISOString();
+   const {data,error}=await client.from("dycp_live_sessions").select("*").gte("updated_at",cutoff).order("updated_at",{ascending:false}).limit(8);
+   if(error)throw error;
+   const grid=$("studentGrid");grid.innerHTML="";
+   const rows=data||[];$("activeCount").textContent=rows.length;$("lastUpdate").textContent=new Date().toLocaleTimeString("es-MX",{hour12:false});
+   if(!rows.length){grid.innerHTML='<div class="empty">No hay sesiones activas en los últimos 90 segundos.</div>';return;}
+   rows.forEach(r=>{
+    const temp=Number(r.temperature_c)||0;const pct=Math.max(0,Math.min(100,(temp-30)/70*100));
+    const hue=Math.max(0,Math.min(220,220-(temp-30)*3.14));const liquid=`hsl(${hue},82%,48%)`;
+    const card=document.createElement("article");card.className="student";
+    card.innerHTML=`<h3></h3><div class="meta"></div><div class="temp"></div><div class="meta"></div><div class="bar"><i></i></div>`;
+    card.querySelector("h3").textContent=r.engineer_name||"Sin nombre";
+    card.querySelectorAll(".meta")[0].textContent=`${STAGES[r.stage_file]||r.stage_file||"Etapa no indicada"} · Actualizado ${niceTime(r.updated_at)}`;
+    card.querySelector(".temp").textContent=`${temp.toFixed(1)} °C`;
+    card.querySelectorAll(".meta")[1].textContent=`Setpoint: ${r.setpoint_c??"—"} °C · Válvula: ${r.valve_pct??"—"} %`;
+    const i=card.querySelector(".bar i");i.style.width=pct+"%";i.style.background=liquid;card.style.borderTop=`3px solid ${liquid}`;
+    grid.appendChild(card);
+   });
+ }catch(e){$("backendNotice").textContent="No se pudo consultar Supabase: "+e.message;demoCards();}
+}
+async function loadResults(){
+ if(!backendReady()){
+  $("resultsNotice").textContent="Modo de demostración: aún no hay base de datos configurada, así que no es posible recuperar resultados reales de las últimas 24 horas.";
+  $("attemptCount").textContent="0";$("engineerCount").textContent="0";$("stageCount").textContent="0";
+  $("resultsBody").innerHTML='<tr><td colspan="5">Conecta Supabase y habilita el registro de eventos para consultar los resultados reales.</td></tr>';lastCsvRows=[];return;
+ }
+ try{
+  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const since=new Date(Date.now()-24*60*60*1000).toISOString();
+  const {data,error}=await client.from("dycp_events").select("*").gte("created_at",since).order("created_at",{ascending:false}).limit(2000);
+  if(error)throw error;
+  const rows=data||[];lastCsvRows=rows;
+  $("attemptCount").textContent=rows.length;
+  $("engineerCount").textContent=new Set(rows.map(r=>r.engineer_name).filter(Boolean)).size;
+  $("stageCount").textContent=new Set(rows.map(r=>r.stage_file).filter(Boolean)).size;
+  $("resultsBody").innerHTML="";
+  if(!rows.length){$("resultsBody").innerHTML='<tr><td colspan="5">No se encontraron eventos en las últimas 24 horas.</td></tr>';return;}
+  rows.forEach(r=>{const tr=document.createElement("tr");[niceTime(r.created_at),r.engineer_name||"—",STAGES[r.stage_file]||r.stage_file||"—",r.temperature_c==null?"—":`${Number(r.temperature_c).toFixed(1)} °C`,r.status||r.event_type||"—"].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});$("resultsBody").appendChild(tr);});
+  $("resultsNotice").textContent=`Reporte consultado: ${niceTime(since)} hasta ahora.`;
+ }catch(e){$("resultsNotice").textContent="No se pudo cargar el reporte: "+e.message;}
+}
+$("exportCsv").addEventListener("click",()=>{
+ if(!lastCsvRows.length){alert("No hay resultados cargados para exportar.");return;}
+ const cols=["created_at","engineer_name","stage_file","temperature_c","setpoint_c","valve_pct","status","event_type"];
+ const quote=v=>`"${String(v??"").replaceAll('"','""')}"`;
+ const csv=[cols.join(","),...lastCsvRows.map(r=>cols.map(c=>quote(r[c])).join(","))].join("\r\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"}));a.download="reporte_dycp_ultimas_24h.csv";a.click();URL.revokeObjectURL(a.href);
+});
+if(window.supabase===undefined){
+ const script=document.createElement("script");script.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";document.head.appendChild(script);
+}
+</script>
+</body>
+</html>
